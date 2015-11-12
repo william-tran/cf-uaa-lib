@@ -92,6 +92,32 @@ describe Http do
     expect(http_double).to have_received(:cert_store=).with(cert_store)
     expect(http_double).to have_received(:verify_mode=).with(OpenSSL::SSL::VERIFY_PEER)
   end
+
+  RSpec::Matchers.define :has_header do |k,v|
+    match { |actual| actual[k] == v }
+  end
+
+  it "uses default headers if specified" do
+    reply_double = double('http reply', each_header: {}).as_null_object
+    http_double = double('http', request: reply_double, new: nil)
+    Net::HTTP.stub(:new).and_return(http_double)
+    http_instance.default_headers = { "X-Foo-Id" => "bar" }
+
+    http_instance.http_get("http://example.com")
+
+    expect(http_double).to have_received(:request).with(has_header("X-Foo-Id","bar"), anything)
+  end
+
+  it "overrides default headers if specified" do
+    reply_double = double('http reply', each_header: {}).as_null_object
+    http_double = double('http', request: reply_double, new: nil)
+    Net::HTTP.stub(:new).and_return(http_double)
+    http_instance.default_headers = { "X-Foo-Id" => "bar" }
+
+    http_instance.http_get("http://example.com",nil,{ "X-Foo-Id" => "baz" })
+
+    expect(http_double).to have_received(:request).with(has_header("X-Foo-Id","baz"), anything)
+  end
 end
 
 end

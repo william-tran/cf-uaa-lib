@@ -105,6 +105,7 @@ class Scim
     self.ssl_cert_store = options[:ssl_cert_store]
     self.http_proxy = options[:http_proxy]
     self.https_proxy = options[:https_proxy]
+    self.default_headers = options[:default_headers]
   end
 
   # Convenience method to get the naming attribute, e.g. userName for user,

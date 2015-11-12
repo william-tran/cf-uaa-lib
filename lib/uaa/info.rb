@@ -37,6 +37,7 @@ class Info
     self.symbolize_keys = options[:symbolize_keys]
     self.http_proxy = options[:http_proxy]
     self.https_proxy = options[:https_proxy]
+    self.default_headers = options[:default_headers]
   end
 
   # sets whether the keys in returned hashes should be symbols.

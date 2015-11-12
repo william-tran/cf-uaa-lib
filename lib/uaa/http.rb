@@ -50,7 +50,7 @@ module Http
 
   def self.included(base)
     base.class_eval do
-      attr_accessor :http_proxy, :https_proxy, :skip_ssl_validation, :ssl_ca_file, :ssl_cert_store
+      attr_accessor :http_proxy, :https_proxy, :skip_ssl_validation, :ssl_ca_file, :ssl_cert_store, :default_headers
     end
   end
 
@@ -137,6 +137,9 @@ module Http
 
   def request(target, method, path, body = nil, headers = {})
     headers["accept"] = headers["content-type"] if headers["content-type"] && !headers["accept"]
+    if default_headers 
+      headers = default_headers.merge(headers)
+    end
     url = "#{target}#{path}"
 
     logger.debug { "--->\nrequest: #{method} #{url}\n" +
